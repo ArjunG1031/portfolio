@@ -54,6 +54,11 @@ Hi! My name is Arjun Ganesh
            Gamerunner
         </div>
     </a>
+    <a href="{{site.baseurl}}/cs111-final-project-evidence" style="text-decoration: none;">
+        <div style="background-color: var(--blue); color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s;">
+           CS111 Evidence
+        </div>
+    </a>
     <a href="{{site.baseurl}}/network/stack" style="text-decoration: none;">
         <div style="background-color: var(--orange); color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold; transition: transform 0.2s, box-shadow 0.2s;">
            Networking
