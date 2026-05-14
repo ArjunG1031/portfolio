@@ -46,19 +46,19 @@ Hi! My name is Arjun Ganesh
         </div>
     </a>
 
-    <a href="https://arjung1031.github.io/Portfolio/js/n@tm" style="text-decoration: none;">
+    <a href="{{site.baseurl}}/js/n@tm" style="text-decoration: none;">
         <div style="background-color: #4B0082; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
             Night @ The Museum
         </div>
     </a>
 
-    <a href="https://arjung1031.github.io/Portfolio/js/hwsummation" style="text-decoration: none;">
+    <a href="{{site.baseurl}}/js/hwsummation" style="text-decoration: none;">
         <div style="background-color: #FFA500; color: black; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
             Homework Summation
         </div>
     </a>
 
-    <a href="https://arjung1031.github.io/Portfolio/js/MKA" style="text-decoration: none;">
+    <a href="{{site.baseurl}}/js/MKA" style="text-decoration: none;">
         <div style="background-color: #008080; color: white; padding: 10px 20px; border-radius: 5px; font-weight: bold;">
             My Key Accomplishments
         </div>
