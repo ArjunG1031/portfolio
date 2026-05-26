@@ -238,6 +238,9 @@ class GameLevel {
     this.continue = true
     this.gameEnv.create()
     this.gameLevel = new GameLevelClass(this.gameEnv)
+    if (!this.gameLevel.gameEnv) {
+      this.gameLevel.gameEnv = this.gameEnv
+    }
     this.gameObjectClasses = this.gameLevel.classes
 
     // Set current level instance in Game
