@@ -12,8 +12,8 @@
       <button type="button" class="stopBtn" title="Stop Game">■ Stop</button>
       <button type="button" class="fullscreenBtn" title="Toggle Fullscreen">⛶ Fullscreen</button>
       <select class="engineVersionSelect" title="Select Game Engine Version">
-        <option value="GameEnginev1">Engine v1</option>
-        <option value="GameEnginev1.1" selected>Engine v1.1</option>
+        <option value="GameEnginev1"{% if include.engine_version == 'GameEnginev1' %} selected{% endif %}>Engine v1</option>
+        <option value="GameEnginev1.1"{% if include.engine_version != 'GameEnginev1' %} selected{% endif %}>Engine v1.1</option>
       </select>
       <select class="levelSelect" title="Select Level">
         <option value="">Select Level...</option>
@@ -39,8 +39,8 @@
     <button type="button" class="stopBtn" title="Stop Game">■ Stop</button>
     <button type="button" class="fullscreenBtn" title="Toggle Fullscreen">⛶ Fullscreen</button>
     <select class="engineVersionSelect" title="Select Game Engine Version">
-      <option value="GameEnginev1">Engine v1</option>
-      <option value="GameEnginev1.1" selected>Engine v1.1</option>
+      <option value="GameEnginev1"{% if include.engine_version == 'GameEnginev1' %} selected{% endif %}>Engine v1</option>
+      <option value="GameEnginev1.1"{% if include.engine_version != 'GameEnginev1' %} selected{% endif %}>Engine v1.1</option>
     </select>
     <select class="levelSelect" title="Select Level">
       <option value="">Select Level...</option>
@@ -73,7 +73,7 @@ import { BaseRunner, GameExecutor } from '{{ site.baseurl }}/assets/js/pages/run
   if (!container) return;
   
   const hideEdit = "{{ include.hide_edit | default: 'false' }}" === "true";
-  const defaultCode = `{{ include.code }}`.trim();
+  const defaultCode = {{ include.code | jsonify }}.trim();
   const editorHeight = "{{ include.editor_height }}";
   const canvasHeight = "{{ include.height }}";
   const levelClasses = `{{ include.levels }}`.trim().split(',').map(s => s.trim()).filter(Boolean);
@@ -96,7 +96,7 @@ import { BaseRunner, GameExecutor } from '{{ site.baseurl }}/assets/js/pages/run
 
   const configuredCanvasHeight = parseCssSizeToPixels(canvasHeight, 580);
   const runner = new BaseRunner(container, {
-    storageKey,
+    storageKey: hideEdit ? '' : storageKey,
     statusSelector: '.status-text'
   });
 

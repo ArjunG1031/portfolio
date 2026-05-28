@@ -1,8 +1,7 @@
-import GameEnvBackground from '../../../GameEnginev1/essentials/GameEnvBackground.js';
-import Player from '../../../GameEnginev1/essentials/Player.js';
-import Npc from '../../../GameEnginev1/essentials/Npc.js';
-import Barrier from '../../../GameEnginev1.1/essentials/Barrier.js';
-import Collectible from '../../../GameEnginev1.1/essentials/Collectible.js';
+import GameEnvBackground from './GameEnvBackground.js';
+import Player from './Player.js';
+import Npc from './Npc.js';
+import GameObject from './GameObject.js';
 
 console.log('GameLevelSeek.js loaded:', new Date().toISOString());
 
@@ -16,14 +15,14 @@ class GameLevelSeek {
         // ---------------- BACKGROUND ----------------
         const bgData = {
             name: "custom_bg",
-            src: path + "/images/projects/characters/tagplayground.png",
+            src: path + "/images/projects/gamify/tagplayground.png",
             pixels: { height: 400, width: 560 }
         };
 
         // ---------------- PLAYER ----------------
         const playerData = {
             id: 'playerData',
-            src: path + "/images/projects/characters/boysprite.png",
+            src: path + "/images/projects/gamify/boysprite.png",
             SCALE_FACTOR: 5,
             STEP_FACTOR: 1000,
             ANIMATION_RATE: 50,
@@ -55,7 +54,7 @@ class GameLevelSeek {
         const spriteOptions = [
             {
                 label: "Boy",
-                src: path + "/images/projects/characters/boysprite.png",
+                src: path + "/images/projects/gamify/boysprite.png",
                 pixels: { height: 612, width: 408 },
                 SCALE_FACTOR: 5,
                 ANIMATION_RATE: 50,
@@ -71,8 +70,8 @@ class GameLevelSeek {
             },
             {
                 label: "Scuba Diver",
-                src: path + "/images/projects/characters/scubadiver.png",
-                pixels: { height: 948, width: 632 },
+                src: path + "/images/projects/gamify/water/nezuko.png",
+                pixels: { height: 316, width: 189 },
                 SCALE_FACTOR: 5,
                 ANIMATION_RATE: 50,
                 orientation: { rows: 4, columns: 3 },
@@ -87,7 +86,7 @@ class GameLevelSeek {
             },
             {
                 label: "Astro",
-                src: path + "/images/projects/characters/astro.png",
+                src: path + "/images/projects/gamify/astro.png",
                 pixels: { height: 770, width: 513 },
                 SCALE_FACTOR: 11,
                 ANIMATION_RATE: 110,
@@ -103,8 +102,8 @@ class GameLevelSeek {
             },
             {
                 label: "Kirby",
-                src: path + "/images/projects/characters/kirby.png",
-                pixels: { height: 36, width: 569 },
+                src: path + "/images/projects/gamify/kirby.png",
+                pixels: { height: 36, width: 559 },
                 SCALE_FACTOR: 7,
                 ANIMATION_RATE: 8,
                 orientation: { rows: 1, columns: 13 },
@@ -122,7 +121,7 @@ class GameLevelSeek {
         let currentSprite = 0;
 
         const getPlayer = () => {
-            return gameEnv.gameObjects.find(obj => obj.id === 'playerdata');
+            return gameEnv.gameObjects.find(obj => obj instanceof Player || obj.id === 'playerdata' || obj.spriteData?.id === 'playerData');
         };
 
         const setSprite = (spriteOption) => {
@@ -159,15 +158,16 @@ class GameLevelSeek {
             player.frameIndex = 0;
             player.frameCounter = 0;
             player.direction = 'down';
+            player.velocity = { x: 0, y: 0 };
+            player.pressedKeys = {};
             player.resize();
 
-            if (!player.spriteSheet) {
-                player.spriteSheet = new Image();
-            }
-
+            player.spriteSheet = new Image();
             player.spriteReady = false;
             player.spriteSheet.onload = () => {
                 player.spriteReady = true;
+                player.frameIndex = 0;
+                player.frameCounter = 0;
                 player.resize();
             };
             player.spriteSheet.src = spriteOption.src;
@@ -325,49 +325,86 @@ class GameLevelSeek {
 
         const coinSprite = createPixelCoin();
 
-        // ---------------- SPAWN COINS ----------------
-        const spawnCoins = () => {
-            const padding = 80;
-            const positions = [];
-
-            while (positions.length < coinState.total) {
-                positions.push({
-                    x: Math.random() * (width - padding),
-                    y: Math.random() * (height - padding)
-                });
+        class SeekCoin extends GameObject {
+            constructor(data, gameEnv) {
+                super(gameEnv);
+                this.id = data.id;
+                this.position = { ...data.position };
+                this.radius = data.radius || 18;
+                this.image = new Image();
+                this.image.src = data.src;
+                this.collected = false;
             }
 
-            positions.forEach((pos, i) => {
-                const coin = new Collectible({
-                    id: `coin_${i}`,
-                    src: coinSprite,
-                    SCALE_FACTOR: 15,
-                    INIT_POSITION: pos,
-                    pixels: { height: 36, width: 36 },
-                    interact: function () {
+            update() {
+                if (this.collected) return;
+
+                const player = getPlayer();
+                if (player) {
+                    const playerCenter = {
+                        x: player.position.x + player.width / 2,
+                        y: player.position.y + player.height / 2
+                    };
+                    const coinCenter = {
+                        x: this.position.x + this.radius,
+                        y: this.position.y + this.radius
+                    };
+
+                    if (Math.hypot(playerCenter.x - coinCenter.x, playerCenter.y - coinCenter.y) < this.radius + player.width / 2) {
+                        this.collected = true;
                         coinState.collected++;
-                        this.destroy();
+                        console.log(`Collected coin ${coinState.collected} of ${coinState.total}`);
 
                         if (coinState.collected >= coinState.total) {
                             coinState.kirbySpawned = true;
                             console.log("All coins collected!");
                         }
+                        return;
                     }
-                }, gameEnv);
+                }
 
-                gameEnv.gameObjects.push(coin);
-            });
-        };
+                this.draw();
+            }
+
+            draw() {
+                const ctx = this.gameEnv.ctx;
+                if (!ctx) return;
+
+                if (this.image.complete && this.image.naturalWidth > 0) {
+                    ctx.drawImage(this.image, this.position.x, this.position.y, this.radius * 2, this.radius * 2);
+                    return;
+                }
+
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.arc(this.position.x + this.radius, this.position.y + this.radius, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            resize() {}
+            destroy() {}
+        }
+
+        const padding = 80;
+        const coinClasses = Array.from({ length: coinState.total }, (_, index) => ({
+            class: SeekCoin,
+            data: {
+                id: `coin_${index}`,
+                src: coinSprite,
+                radius: 18,
+                position: {
+                    x: Math.random() * (width - padding),
+                    y: Math.random() * (height - padding)
+                }
+            }
+        }));
 
         // ---------------- GAME OBJECTS ----------------
         this.classes = [
             { class: GameEnvBackground, data: bgData },
-            { class: Player, data: playerData },
-            { class: Barrier, data: { id: 'b1', x: 100, y: 100, width: 50, height: 50 } }
+            ...coinClasses,
+            { class: Player, data: playerData }
         ];
-
-        // ---------------- START ----------------
-        spawnCoins();
     }
 }
 

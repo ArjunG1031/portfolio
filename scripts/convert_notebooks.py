@@ -158,10 +158,11 @@ class CodeRunner:
                     continue
                 key, value = option.split(':', 1)
                 key = key.strip()
-                value = value.strip().lower()
-                if value == 'true':
+                value = value.strip()
+                normalized_value = value.lower()
+                if normalized_value == 'true':
                     options[key] = True
-                elif value == 'false':
+                elif normalized_value == 'false':
                     options[key] = False
                 else:
                     options[key] = value
@@ -299,10 +300,11 @@ class UiRunner:
                     continue
                 key, value = option.split(':', 1)
                 key = key.strip()
-                value = value.strip().lower()
-                if value == 'true':
+                value = value.strip()
+                normalized_value = value.lower()
+                if normalized_value == 'true':
                     options[key] = True
-                elif value == 'false':
+                elif normalized_value == 'false':
                     options[key] = False
                 else:
                     options[key] = value
@@ -455,10 +457,11 @@ class GameRunner:
                     continue
                 key, value = option.split(':', 1)
                 key = key.strip()
-                value = value.strip().lower()
-                if value == 'true':
+                value = value.strip()
+                normalized_value = value.lower()
+                if normalized_value == 'true':
                     options[key] = True
-                elif value == 'false':
+                elif normalized_value == 'false':
                     options[key] = False
                 else:
                     options[key] = value
@@ -546,6 +549,8 @@ class GameRunner:
             lines.append(f'   height="{self.options["height"]}"')
         if self.options.get('editor_height'):
             lines.append(f'   editor_height="{self.options["editor_height"]}"')
+        if self.options.get('engine_version'):
+            lines.append(f'   engine_version="{self.options["engine_version"]}"')
 
         lines.extend(['%}', ''])
         return lines

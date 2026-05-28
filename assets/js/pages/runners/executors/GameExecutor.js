@@ -238,9 +238,8 @@ export class GameExecutor {
 
       code = code.replace(/GameEnginev1(?:\.1)?/g, selectedVersion);
       code = code.replace(/from\s+['"]([^'"]+)['"]/g, (match, importPath) => {
-        // Keep import-map aliases, relative paths, and explicit schemes untouched.
+        // Keep relative paths and explicit schemes untouched.
         if (
-          importPath.startsWith('@') ||
           importPath.startsWith('./') ||
           importPath.startsWith('../') ||
           /^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(importPath)
@@ -248,7 +247,9 @@ export class GameExecutor {
           return match;
         }
 
-        if (importPath.startsWith('/')) {
+        if (importPath.startsWith('@assets/')) {
+          return `from '${baseUrl}/${importPath.slice(1)}'`;
+        } else if (importPath.startsWith('/')) {
           return `from '${baseUrl}${importPath}'`;
         } else if (!importPath.startsWith('http://') && !importPath.startsWith('https://')) {
           return `from '${baseUrl}/${importPath}'`;
