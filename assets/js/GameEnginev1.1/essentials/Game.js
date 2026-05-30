@@ -104,6 +104,34 @@ class GameCore {
         return new GameCore(environment, GameControlClass);
     }
 
+    destroy() {
+        if (this.escapeKeyHandler) {
+            document.removeEventListener('keydown', this.escapeKeyHandler);
+            this.escapeKeyHandler = null;
+        }
+
+        if (this.gameControl) {
+            this.gameControl.removeExitKeyListener?.();
+            this.gameControl.cleanupInteractionHandlers?.();
+
+            if (this.gameControl.currentLevel?.destroy) {
+                try {
+                    this.gameControl.currentLevel.destroy();
+                } catch (error) {
+                    console.warn("Error destroying current game level:", error);
+                }
+            }
+        }
+
+        if (this.topControls?.parentNode) {
+            this.topControls.remove();
+        }
+
+        if (this.gameUI?.destroy) {
+            this.gameUI.destroy();
+        }
+    }
+
     returnHome() {
         if (!this.gameControl || !this.initialLevelClasses.length) return;
 

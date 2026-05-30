@@ -31,6 +31,25 @@ class Game {
         return new Game(environment);
     }
 
+    destroy() {
+        if (this.gameControl) {
+            this.gameControl.removeExitKeyListener?.();
+            this.gameControl.cleanupInteractionHandlers?.();
+
+            if (this.gameControl.currentLevel?.destroy) {
+                try {
+                    this.gameControl.currentLevel.destroy();
+                } catch (error) {
+                    console.warn("Error destroying current game level:", error);
+                }
+            }
+        }
+
+        if (this.gameUI?.destroy) {
+            this.gameUI.destroy();
+        }
+    }
+
     initUser() {
         const pythonURL = this.pythonURI + '/api/id';
         fetch(pythonURL, this.fetchOptions)

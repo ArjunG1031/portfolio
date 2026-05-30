@@ -451,7 +451,7 @@ watch-projects:
 
 # Bundle install (dependency for jekyll-serve)
 bundle-install:
-	@if [ ! -f .bundle/install_marker ] || [ Gemfile -nt .bundle/install_marker ] || [ Gemfile.lock -nt .bundle/install_marker ]; then \
+	@if [ ! -f .bundle/install_marker ] || [ "Gemfile" -nt ".bundle/install_marker" ] || [ "Gemfile.lock" -nt ".bundle/install_marker" ]; then \
 		bundle install; \
 		mkdir -p .bundle && touch .bundle/install_marker; \
 	fi
