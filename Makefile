@@ -1,4 +1,4 @@
-OST ?= localhost
+HOST ?= localhost
 PORT ?= 4500
 LOG_FILE = /tmp/jekyll$(PORT).log
 PYTHON := venv/bin/python3
@@ -451,7 +451,7 @@ watch-projects:
 
 # Bundle install (dependency for jekyll-serve)
 bundle-install:
-	@if [ ! -f .bundle/install_marker ] || [ "Gemfile" -nt ".bundle/install_marker" ] || [ "Gemfile.lock" -nt ".bundle/install_marker" ]; then \
+	@if [ ! -f ".bundle/install_marker" ] || [ "Gemfile" -nt ".bundle/install_marker" ] || [ "Gemfile.lock" -nt ".bundle/install_marker" ]; then \
 		bundle install; \
 		mkdir -p .bundle && touch .bundle/install_marker; \
 	fi
@@ -466,22 +466,22 @@ jekyll-serve: bundle-install
 
 # Common server wait logic
 wait-for-server:
-	@until [ -f $(LOG_FILE) ]; do sleep 1; done
+	@until [ -f "$(LOG_FILE)" ]; do sleep 1; done
 	@for ((COUNTER = 0; ; COUNTER++)); do \
-		if grep -q "Server address:" $(LOG_FILE); then \
+		if grep -q "Server address:" "$(LOG_FILE)"; then \
 			echo "Server started in $$COUNTER seconds"; \
-			grep "Server address:" $(LOG_FILE); \
+			grep "Server address:" "$(LOG_FILE)"; \
 			break; \
 		fi; \
 		if [ $$COUNTER -eq 300 ]; then \
 			echo "Server timed out after $$COUNTER seconds."; \
-			echo "Review errors from $(LOG_FILE)."; \
-			cat $(LOG_FILE); \
+			echo "Review errors from "$(LOG_FILE)"."; \
+			cat "$(LOG_FILE)"; \
 			exit 1; \
 		fi; \
-		if [ $$COUNTER -gt 5 ] && grep -E -qi "\bfatal\b|\bexception\b" $(LOG_FILE); then \
+		if [ $$COUNTER -gt 5 ] && grep -E -qi "\bfatal\b|\bexception\b" "$(LOG_FILE)"; then \
 			echo "Fatal error detected during startup!"; \
-			cat $(LOG_FILE); \
+			cat "$(LOG_FILE)"; \
 			exit 1; \
 		fi; \
 		if [ $$((COUNTER % 10)) -eq 0 ] && [ $$COUNTER -gt 0 ]; then \
