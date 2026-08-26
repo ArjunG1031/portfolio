@@ -133,6 +133,92 @@ Flags are from Wikipedia. Album covers are my own images.
 
 ---
 
+<!-- ===== PHOTOS OF ME ===== -->
+## 📸 Photos of Me
+<div class="grid-container" id="me_grid"></div>
+
+<script>
+  const SITE_BASE_ME = '{{ site.baseurl | default: "" }}';
+  const meGrid = document.getElementById("me_grid");
+
+  const mePhotos = [
+    {
+      title: "Arjun",
+      image: SITE_BASE_ME + "/images/about/Arjun.jpeg"
+    }
+  ];
+
+  mePhotos.forEach(photo => {
+    const item = document.createElement("div");
+    item.className = "grid-item";
+
+    const img = document.createElement("img");
+    img.src = photo.image;
+    img.alt = photo.title;
+
+    const title = document.createElement("p");
+    title.textContent = photo.title;
+    title.style.fontWeight = "bold";
+
+    item.appendChild(img);
+    item.appendChild(title);
+    meGrid.appendChild(item);
+  });
+</script>
+
+---
+
+<!-- ===== THINGS I LIKED ===== -->
+## 🏀 Things I Liked
+<div class="grid-container" id="likes_grid"></div>
+
+<script>
+  const SITE_BASE_LIKES = '{{ site.baseurl | default: "" }}';
+  const likesGrid = document.getElementById("likes_grid");
+
+  const likes = [
+    {
+      title: "Basketball",
+      description: "I play and love playing basketball",
+      image: SITE_BASE_LIKES + "/images/about/basketball.png"
+    },
+    {
+      title: "Controller",
+      description: "I play video games",
+      image: SITE_BASE_LIKES + "/images/about/controller.png"
+    },
+    {
+      title: "NBA",
+      description: "I love watching professional basketball",
+      image: SITE_BASE_LIKES + "/images/about/NBA.png"
+    }
+  ];
+
+  likes.forEach(like => {
+    const item = document.createElement("div");
+    item.className = "grid-item";
+
+    const img = document.createElement("img");
+    img.src = like.image;
+    img.alt = like.title;
+
+    const title = document.createElement("p");
+    title.textContent = like.title;
+    title.style.fontWeight = "bold";
+
+    const desc = document.createElement("p");
+    desc.textContent = like.description;
+    desc.style.opacity = "0.7";
+
+    item.appendChild(img);
+    item.appendChild(title);
+    item.appendChild(desc);
+    likesGrid.appendChild(item);
+  });
+</script>
+
+---
+
 ## Journey Through Life
 
 - 🏫 Went to Stone Ranch Elementary School  
@@ -146,4 +232,4 @@ Flags are from Wikipedia. Album covers are my own images.
 ## Culture, Family, and Fun
 
 - Born in the U.S., family is from India  
-- Family of 4: me, my sister, my mom, and my dad  
+- Family of 4: me, my sister, my mom, and my dad
