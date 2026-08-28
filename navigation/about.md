@@ -45,6 +45,11 @@ Flags are from Wikipedia. Album covers are my own images.
 
   const locations = [
     {
+      flag: "a/a4/Flag_of_the_United_States.svg",
+      title: "United States",
+      description: "Born here"
+    },
+    {
       flag: "0/01/Flag_of_California.svg",
       title: "California",
       description: "Lived here my entire life"
