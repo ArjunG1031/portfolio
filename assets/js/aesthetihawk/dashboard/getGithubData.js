@@ -70,8 +70,21 @@ export async function fetchGithubData() {
         const issuesData = await issuesResponse.json();
 
         // extract counts and arrays
-        const commitsArray = commitsData.details_of_commits || [];
-        const commitsCount = commitsData.total_commit_contributions || 0;
+        const commitsArray = Array.isArray(commitsData)
+            ? commitsData
+            : (commitsData.details_of_commits || commitsData.commits || []);
+        const reportedCommitCount = Array.isArray(commitsData)
+            ? 0
+            : [
+                commitsData.total_commit_contributions,
+                commitsData.total_commits,
+                commitsData.commit_count,
+                commitsData.commits_count
+            ].find((value) => Number.isFinite(Number(value)) && Number(value) >= 0);
+        const commitsCount = Math.max(
+            Number(reportedCommitCount) || 0,
+            commitsArray.length
+        );
         const prsArray = prsData.pull_requests || [];
         const prsCount = prsArray.length || 0;
         const issuesArray = issuesData.issues || [];

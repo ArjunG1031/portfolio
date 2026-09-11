@@ -547,8 +547,21 @@ score += gists * 0.5
             const prsData = await prsRes.json();
             const issuesData = await issuesRes.json();
 
-            const commitsArray = commitsData.details_of_commits || [];
-            const commitsCount = commitsData.total_commit_contributions || 0;
+            const commitsArray = Array.isArray(commitsData)
+                ? commitsData
+                : (commitsData.details_of_commits || commitsData.commits || []);
+            const reportedCommitCount = Array.isArray(commitsData)
+                ? 0
+                : [
+                    commitsData.total_commit_contributions,
+                    commitsData.total_commits,
+                    commitsData.commit_count,
+                    commitsData.commits_count
+                ].find((value) => Number.isFinite(Number(value)) && Number(value) >= 0);
+            const commitsCount = Math.max(
+                Number(reportedCommitCount) || 0,
+                commitsArray.length
+            );
             const totalAdditions = commitsData.total_lines_added || 0;
             const totalDeletions = commitsData.total_lines_deleted || 0;
 
